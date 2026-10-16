@@ -19,6 +19,7 @@ spring:
 
   ai:
     openai:
+      base-url: https://openrouter.ai/api/v1
       api-key: ${OPENAI_API_KEY:demo-key}
       chat:
         model: ${OPENAI_CHAT_MODEL:gpt-3.5-turbo}
@@ -39,17 +40,35 @@ spring:
   servlet:
     multipart:
       max-file-size: 25MB
-      max-request-size: 50B
+      max-request-size: 50MB
+
+  config:
+    import:
+      - classpath:env.properties
 
 # APP Configuration
-app:
+knowra-config:
   rag:
-    chunk-size: 600
+    chunk-size: 700
+    min-chunk-size-chars: 350
+    min-chunk-length-to-embed: 5
+    max-num-chunks: 10000
     chunk-overlap: 100
     top-k: 5
     similarity-threshold: 0.0
+
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET, POST, PUT, DELETE, OPTIONS
+    allowed-headers: "*"
 
 # Logging Configuration
 logging:
   level:
     root: INFO
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

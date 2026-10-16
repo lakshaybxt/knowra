@@ -2,7 +2,7 @@
 input=$(cat)
 
 # Loop guard: if Claude is already continuing because of this hook, let it stop
-if [ "$(echo "$input" | jq -r '.stop_hook_active // false')" = "true" ]; then
+if echo "$input" | grep -q '"stop_hook_active": *true'; then
   exit 0
 fi
 
