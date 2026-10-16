@@ -1,6 +1,6 @@
 package io.github.lakshaybxt.knowra.handler;
 
-import io.github.lakshaybxt.knowra.dto.ApiErrorResponse;
+import io.github.lakshaybxt.knowra.dto.ApiErrorEnvelope;
 import io.github.lakshaybxt.knowra.exception.DocumentProcessingException;
 import io.github.lakshaybxt.knowra.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException(
+  public ResponseEntity<ApiErrorEnvelope> handleResourceNotFoundException(
       ResourceNotFoundException ex,
       HttpServletRequest request) {
 
     log.warn("Resource not found: {}", ex.getMessage());
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message(ex.getMessage())
         .status(HttpStatus.NOT_FOUND.value())
@@ -43,13 +43,13 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(DocumentProcessingException.class)
-  public ResponseEntity<ApiErrorResponse> handleDocumentProcessingException(
+  public ResponseEntity<ApiErrorEnvelope> handleDocumentProcessingException(
       DocumentProcessingException ex,
       HttpServletRequest request) {
 
     log.warn("Document processing error: {}", ex.getMessage());
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message(ex.getMessage())
         .status(HttpStatus.UNPROCESSABLE_CONTENT.value())
@@ -63,13 +63,13 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(MaxUploadSizeExceededException.class)
-  public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceededException(
+  public ResponseEntity<ApiErrorEnvelope> handleMaxUploadSizeExceededException(
       MaxUploadSizeExceededException ex,
       HttpServletRequest request) {
 
     log.warn("File upload size exceeded: {}", ex.getMessage());
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message("File size exceeds the maximum limit")
         .status(HttpStatus.CONTENT_TOO_LARGE.value())
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiErrorResponse> handleValidationException(
+  public ResponseEntity<ApiErrorEnvelope> handleValidationException(
       MethodArgumentNotValidException ex,
       HttpServletRequest request) {
 
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
             DefaultMessageSourceResolvable::getDefaultMessage
         ));
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message("Validation failed for the request")
         .status(HttpStatus.BAD_REQUEST.value())
@@ -112,13 +112,13 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(
+  public ResponseEntity<ApiErrorEnvelope> handleIllegalArgumentException(
       IllegalArgumentException ex,
       HttpServletRequest request) {
 
     log.warn("Illegal argument: {}", ex.getMessage());
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message(ex.getMessage())
         .status(HttpStatus.BAD_REQUEST.value())
@@ -133,14 +133,14 @@ public class GlobalExceptionHandler {
 
   // Handles unexpected exceptions (500)
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiErrorResponse> handleGlobalException(
+  public ResponseEntity<ApiErrorEnvelope> handleGlobalException(
       Exception ex,
       HttpServletRequest request) {
 
     log.error("Unexpected error occurred at {}",
         request.getRequestURI(), ex);
 
-    ApiErrorResponse errorResponse = ApiErrorResponse.builder()
+    ApiErrorEnvelope errorResponse = ApiErrorEnvelope.builder()
         .success(false)
         .message("An unexpected error occurred")
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())

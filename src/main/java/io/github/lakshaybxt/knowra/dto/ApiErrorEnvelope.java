@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class ApiErrorResponse {
+public class ApiErrorEnvelope {
 
   private final boolean success;
   private final String message;
